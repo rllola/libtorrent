@@ -74,8 +74,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "libtorrent/aux_/max_path.hpp" // for TORRENT_MAX_PATH
 #include <cstring>
 
-// for convert_to_wstring and convert_to_native
-#include "libtorrent/aux_/escape_string.hpp"
+#include "libtorrent/aux_/escape_string.hpp" // for convert_to_native
 #include "libtorrent/assert.hpp"
 #include "libtorrent/aux_/throw.hpp"
 
@@ -163,21 +162,16 @@ namespace libtorrent {
 	{
 #ifdef TORRENT_WINDOWS
 #if TORRENT_USE_UNC_PATHS
-		std::string prepared_path;
 		// UNC paths must be absolute
 		// network paths are already UNC paths
-		if (path.substr(0,2) == "\\\\")
-			prepared_path = path;
-		else
-		{
-			std::string sep_path = path;
-			std::replace(sep_path.begin(), sep_path.end(), '/', '\\');
-			prepared_path = "\\\\?\\" + (is_complete(sep_path) ? sep_path : complete(sep_path));
-		}
+		std::string prepared_path =
+			(path.substr(0,2) == "\\\\")
+			? path
+			: "\\\\?\\" + (is_complete(path) ? path : complete(path));
 #else
 		std::string prepared_path = path;
-		std::replace(prepared_path.begin(), prepared_path.end(), '/', '\\');
 #endif
+		std::replace(prepared_path.begin(), prepared_path.end(), '/', '\\');
 
 		return convert_to_wstring(prepared_path);
 #else // TORRENT_WINDOWS

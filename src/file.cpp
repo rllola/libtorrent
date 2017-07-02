@@ -81,13 +81,11 @@ struct iovec
 
 #include "libtorrent/aux_/alloca.hpp"
 #include "libtorrent/file.hpp"
-#include "libtorrent/aux_/path.hpp"
+#include "libtorrent/aux_/path.hpp" // for convert_to_native_path_string
 #include "libtorrent/string_util.hpp"
 #include "libtorrent/aux_/max_path.hpp" // for TORRENT_MAX_PATH
 #include <cstring>
 
-// for convert_to_wstring and convert_to_native
-#include "libtorrent/aux_/escape_string.hpp"
 #include "libtorrent/assert.hpp"
 #include "libtorrent/aux_/throw.hpp"
 
@@ -402,7 +400,7 @@ static_assert((open_mode_t::sparse & open_mode_t::attribute_mask) == open_mode_t
 #ifdef TORRENT_WINDOWS
 		return convert_from_native_path(m_fd.cFileName);
 #else
-		return convert_from_native(m_dirent.d_name);
+		return convert_from_native_path(m_dirent.d_name);
 #endif
 	}
 
